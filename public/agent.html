@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Call</title>
+    <link href='./agent.css' rel='stylesheet'>
+    <link href="./bootstrap.min.css" rel="stylesheet">
+    <script src="bootstrap.bundle.min.js"></script>
+    <script src="./sweetalert2@11.js"></script>
+</head>
+
+<body class="bg-light">
+    <div class='main_container'>
+        <div class='call_container'>
+            <div class='videos_container'>
+                <div id="status_bar" style="display: none;color: whitesmoke;display: none;justify-content: center;align-items: center;padding: 0.5rem;width: 100%;font-size: small;background: blueviolet;">VC Disconnected, Please Reconnect Again</div>
+                <div class="dropdown" style="position: absolute;right: 0rem;margin: 0.5rem;z-index: 1;">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        MediaDevices
+                    </button>
+                    <ul class="dropdown-menu" style="max-width:25rem;overflow: hidden;"
+                        aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" data-deviceId="">Device Name</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                    </ul>
+                </div>
+                <div
+                    style="display: flex;align-items: center;justify-content: left;padding-left: 1rem;position: absolute;background-color: #adadaddb;border-radius: 7px;margin: 0.5rem;z-index: 5;">
+                    <button type="button" class="btn btn-secondary" id="connect_vc" data-status="disconnected">Connect
+                        VC</button>
+                    <div style="color: aliceblue;padding: 1rem;"><span id="user_id">#####</span>
+                    </div>
+                </div>
+                <div
+                    style="position: absolute;color: aliceblue;padding: 1rem;bottom: 0rem;right: 0rem;font-size: small;">
+                    Status: <span id="status">#####</span></div>
+                <video class='remote_video' playsinline autoplay id='remote_video'></video>
+                <div class='local_video_container'>
+                    <video class='local_video' id='local_video' muted autoplay playsinline></video>
+                </div>
+                <div class='video_recording_buttons_container display_none' title="Recording ..."
+                    id='video_recording_buttons'>
+                    <img style="width: 2rem;height: 2rem;" src='/images/record.png'></img>
+                </div>
+            </div>
+            <div class='call_buttons_container' id='call_buttons'>
+                <button class='call_button_small' id='mic_button'>
+                    <img src='/images/mic.png' id='mic_button_image'></img>
+                </button>
+                <button class='call_button_large' id='hang_up_button' style="display: none;">
+                    <img src='/images/hangUp.png'></img>
+                </button>
+                <button class='call_button_small' id='camera_button'>
+                    <img src='/images/camera.png' id='camera_button_image'></img>
+                </button>
+            </div>
+            <div id="call_display" class="display_none" style="justify-content: center;
+        text-align: center;">
+                <div class="bg-success" style="border-radius: 6px; color: aliceblue;width: 22%;padding: 0.6rem;">
+                    Calling...
+                </div>
+            </div>
+
+            <!-- <div class="personal_code" style="color: aliceblue;">
+                <p class="text-left bg-primary bg-gradient" id="pc" title="Use this code to join in meet">Personal Code:<span id="pc1"></span>
+                </p>
+            </div> -->
+            <!-- <div class="input-group mb-3 personal_code">
+                <input type="text" id="personal_code_input" class="form-control" placeholder="Peer Code To Join Call"
+                    aria-label="Peer Code To Join Call" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-primary" id="join" type="button">Join</button>
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+    <script src='/socket.io/socket.io.js'></script>
+    <script src="./RTCHandler.js" type='module'></script>
+    <script src="agent.js" type='module'></script>
+    <script src="./idleTimeout.js"></script>
+</body>
+
+</html>
