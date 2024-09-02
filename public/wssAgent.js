@@ -3,12 +3,12 @@ import * as webRTCHandler from "./RTCHandlerAgent.js";
 import * as constants from "./constants.js";
 import * as ui from "./uiInteract.js";
 
-let socketIO = null;
+let socketIO = null; 
 
-export const registerSocketEvents = (socket) => {
+export const registerSocketEvents = (socket) => { // wss agent handles the events  from agent 
   socketIO = socket;
 
-  socket.on("emitUser", (msg) => {
+  socket.on("emitUser", (msg) => {// emit user --- after estableshing connection from socket it returns the id 
     console.log(msg);
     store.setSocketId(msg.id.connection_id, msg.id.user);
     ui.updatePersonalCode(msg.id.user);
@@ -34,7 +34,7 @@ export const registerSocketEvents = (socket) => {
   let ringtone = new Audio("./audio/user_disconnect.mp3");
   socket.on("disconnect", () => {
 
-    const status_bar = document.querySelector("#status_bar");
+    const status_bar = document.querySelector("#status_bar"); // vc connected disconnected  popup
     status_bar.style.display = "flex";
     ringtone.play();
     ringtone.pause();
@@ -46,20 +46,20 @@ export const registerSocketEvents = (socket) => {
     connect_vc.dataset.status = "disconnected";
   });
 
-  socket.on("connect", () => {
+  socket.on("connect", () => { // if vc connnected it 
     const status_bar = document.querySelector("#status_bar");
     status_bar.style.display = "none";
   })
 
-  socket.on("webRTC-signaling", (data) => {
+  socket.on("webRTC-signaling", (data) => { // to check whether we arre accepting or declining the call
     switch (data.type) {
       case constants.webRTCSignaling.OFFER:
-        webRTCHandler.handleWebRTCOffer(data);
+        webRTCHandler.handleWebRTCOffer(data); // ringing
         break;
       case constants.webRTCSignaling.ANSWER:
-        webRTCHandler.handleWebRTCAnswer(data);
+        webRTCHandler.handleWebRTCAnswer(data); // attending the call
         break;
-      case constants.webRTCSignaling.ICE_CANDIDATE:
+      case constants.webRTCSignaling.ICE_CANDIDATE: 
         webRTCHandler.handleWebRTCCandidate(data);
         break;
       default:

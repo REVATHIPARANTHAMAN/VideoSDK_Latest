@@ -2,13 +2,13 @@ import * as webRTCHandler from "./RTCHandlerAgent.js";
 import * as socketCon from "./wssAgent.js";
 import * as store from "./store.js"
 import * as ui from "./uiInteract.js"
-webRTCHandler.getLocalPreview();
+webRTCHandler.getLocalPreview(); // to get the local camera(local mobile)
 
 const micButton = document.getElementById("mic_button");
 micButton.addEventListener("click", () => {
-  const localStream = store.getState().localStream;
-  const micEnabled = localStream.getAudioTracks()[0].enabled;
-  localStream.getAudioTracks()[0].enabled = !micEnabled;
+  const localStream = store.getState().localStream; // store values returning from the state where default values are loaded
+  const micEnabled = localStream.getAudioTracks()[0].enabled; // to return the mic value
+  localStream.getAudioTracks()[0].enabled = !micEnabled; // 
   if (localStream.getAudioTracks()[0].enabled) {
     store.setMute(true);
   } else {
@@ -66,19 +66,19 @@ changeCamer.addEventListener("click", () => {
   console.log(store.getVideoDevices());
 });
 
-if (URLParams.get("channel")) {
+if (URLParams.get("channel")) {  // channed --- to check whether itt is android or ios
   store.setDevice(URLParams.get("channel"));
 }
 
 
-let dropDown = document.querySelector(".dropdown");
-let dropDownMenu = document.querySelector(".dropdown-menu");
-let dropdownItem = document.querySelector(".dropdown-item");
-let divider = document.querySelector(".dropdown-divider");
+let dropDown = document.querySelector(".dropdown"); // executing in runtime
+let dropDownMenu = document.querySelector(".dropdown-menu");// executing in runtime
+let dropdownItem = document.querySelector(".dropdown-item");// executing in runtime
+let divider = document.querySelector(".dropdown-divider");// executing in runtime
 
 let previousSelectedVideo = "", previousSelectedAudio = "";
 
-dropDown.addEventListener("click", () => {
+dropDown.addEventListener("click", () => { // UI  selecting camera and mic source
   dropDownMenu.innerHTML = "";
   let selectD = store.getSelectedDevices()
   store.getVideoDevices().forEach((item) => {
@@ -112,7 +112,7 @@ dropDown.addEventListener("click", () => {
   });
 })
 
-function selectDeviceVideo(event) {
+function selectDeviceVideo(event) { // UI for selecting the video -- function to add the selected device in the stream
   event.target.style.color = "#1e2125";
   event.target.style.backgroundColor = "#e9ecef";
   event.stopPropagation();
@@ -132,7 +132,7 @@ function selectDeviceVideo(event) {
   }, true);
 }
 
-function selectDeviceAudio(event) {
+function selectDeviceAudio(event) { //UI for selecting the audio device -- function to add the selected device in the stream
   event.target.style.color = "#1e2125";
   event.target.style.backgroundColor = "#e9ecef";
   event.stopPropagation();
@@ -152,31 +152,31 @@ function selectDeviceAudio(event) {
   }, true);
 }
 
-const status = document.querySelector("#status");
+const status = document.querySelector("#status"); // to display the status in the initial screen
 status.textContent = "Not Connected";
 
 let socket = null;
-document.querySelector("#status").textContent = "VC Disconnected";
+document.querySelector("#status").textContent = "VC Disconnected"// ---------????
 const connect_vc = document.querySelector("#connect_vc")
 connect_vc.addEventListener("click", () => {
 
-  if (connect_vc.dataset.status === "disconnected") {
+  if (connect_vc.dataset.status === "disconnected") { // function to check vc is connected or not if disconnected it will connect
     connect_vc.classList.remove("btn-secondary");
     connect_vc.classList.add("btn-success");
     connect_vc.textContent = "Disconnect VC";
     connect_vc.dataset.status = "connected";
     document.querySelector("#status").textContent = "VC Connected";
-    socket = io("/");
-    socketCon.registerSocketEvents(socket);
-    session.start();
+    socket = io("/"); // to create server connection ---- initialise server connection
+    socketCon.registerSocketEvents(socket); // to register events in websockets
+    session.start(); // session time out start
   } else {
     connect_vc.classList.add("btn-secondary");
     connect_vc.classList.remove("btn-success");
     connect_vc.textContent = "Connect VC";
     connect_vc.dataset.status = "disconnected";
     document.querySelector("#status").textContent = "VC Disconnected";
-    socket.close();
-    session.dispose();
+    socket.close(); // server close
+    session.dispose(); // delete the session
   }
 });
 
