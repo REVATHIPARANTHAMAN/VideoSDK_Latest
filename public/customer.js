@@ -82,6 +82,7 @@ async function checkCameraUsage() {
       // Stop the stream to release the camera
       stream.getTracks().forEach(track => track.stop());
   } catch (error) {
+
       if (error.name === 'NotAllowedError') {
           console.log('Camera access was denied by the user.');
           camerastatus.textContent = "Camera NotAllowed";
@@ -96,7 +97,9 @@ async function checkCameraUsage() {
          // await sendCameraStatusToBackend(false);
       } else {
           console.error('Error accessing the camera:', error);
+          camerastatus.textContent = "Camera error";
       }
+      document.getElementById("status_bar").style.display = "block";
   }
 }
 async function sendCameraStatusToBackend(isAvailable) {
