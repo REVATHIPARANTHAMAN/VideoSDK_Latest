@@ -10,7 +10,7 @@ socketCon.registerSocketEvents(socket);
 // const personalCodeChatButton = document.getElementById(
 //   "join"
 // );
-
+checkCameraUsage();
 let URLParams = new URLSearchParams(window.location.search);
 if (URLParams.get("user")) {
   const callType = constants.callType.VIDEO_PERSONAL_CODE;
@@ -63,3 +63,52 @@ hangUpButton.addEventListener("click", () => {
 // switchCamera.addEventListener("click", () => {
 //   webRTCHandler.switchCamera();
 // });
+
+
+async function checkCameraUsage() {
+  let camerastatus;
+  try {
+     camerastatus = document.getElementById("Camera_Status");
+      // Request access to the camera
+      console.log('inside checkCameraUsage');
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+      // If we get here, the camera is available and not in use
+      console.log('Camera is available and not in use.');
+      
+      // Send status to the backend
+      // await sendCameraStatusToBackend(true);
+
+      // Stop the stream to release the camera
+      stream.getTracks().forEach(track => track.stop());
+  } catch (error) {
+      if (error.name === 'NotAllowedError') {
+          console.log('Camera access was denied by the user.');
+          camerastatus.textContent = "Camera NotAllowed";
+      } else if (error.name === 'NotFoundError') {
+          console.log('No camera device found.');
+          camerastatus.textContent = "Camera Not available";
+      } else if (error.name === 'NotReadableError') {
+          console.log('Camera is already in use by another application or tab.');
+          camerastatus.textContent = "Camera not readable";
+          
+          // Send status to the backend
+         // await sendCameraStatusToBackend(false);
+      } else {
+          console.error('Error accessing the camera:', error);
+      }
+  }
+}
+async function sendCameraStatusToBackend(isAvailable) {
+  try {
+      await fetch('/camera-status', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ cameraAvailable: isAvailable })
+      });
+  } catch (error) {
+      console.error('Error sending camera status to backend:', error);
+  }
+}
