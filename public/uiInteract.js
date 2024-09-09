@@ -81,7 +81,7 @@ function close_camera(){
      camerastatus = document.getElementById("Camera_Status");
       // Request access to the camera
       console.log('inside close camera');
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream =  navigator.mediaDevices.getUserMedia({ video: true });
       // Stop the stream to release the camera
       stream.getTracks().forEach(track => track.stop());
       console.log('Camera is closed');
