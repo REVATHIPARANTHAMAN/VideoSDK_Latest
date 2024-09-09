@@ -76,8 +76,10 @@ const createPeerConnection = () => {
         status: "disconnected"
       });
       try {
-        const now = new Date();
-        console.log("onConferenceEnd timestamp" + now.toLocaleString()); // Outputs the current date and time in a human-readable format
+       // const now = new Date();
+        const currentTimeInMilliseconds = Date.now();
+//console.log(currentTimeInMilliseconds);
+        console.log("onConferenceEnd timestamp" + currentTimeInMilliseconds); // Outputs the current date and time in a human-readable format
         ui.close_camera();
         console.log("camera closed in on conferenceend event");
         ui.callNFI("onConferenceEnd");
