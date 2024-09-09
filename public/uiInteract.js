@@ -1,12 +1,13 @@
 import * as constants from "./constants.js";
 import * as store from "./store.js";
 
-export const updateLocalVideo = (stream) => {
+// store local video stream in the 
+export const updateLocalVideo = (stream) => { // assigning stream in the html video element
   const localVideo = document.getElementById("local_video");
   localVideo.srcObject = stream;
 
-  localVideo.addEventListener("loadedmetadata", () => {
-    localVideo.play();
+  localVideo.addEventListener("loadedmetadata", () => { // loadmetaevent ---> if strem ready to play // inbuild event listner
+    localVideo.play(); // 
   });
 };
 
@@ -21,15 +22,15 @@ export const showVideoCallButtons = () => {
   // showElement(personalCodeVideoButton);
 };
 
-const showElement = (element) => {
+const showElement = (element) => { // widget on/off
   if (element.classList.contains("display_none")) {
     element.classList.remove("display_none");
   }
 };
 
-const connected_user = document.getElementById("connected_user");
+const connected_user = document.getElementById("connected_user"); 
 
-export const updatePersonalCode = (personalCode) => {
+export const updatePersonalCode = (personalCode) => { // to show the connected user in the agent screen
   const personal = document.getElementById(
     "user_id"
   );
@@ -39,22 +40,22 @@ export const updatePersonalCode = (personalCode) => {
   console.log(personalCode);
 };
 
-export const showCallingDialog = (rejectCallHandler) => {
+export const showCallingDialog = (rejectCallHandler) => { //  dummy function // to show the text calling
 
   const dialog = document.getElementById("call_display");
   dialog.style.display = "flex";
   showElement(dialog);
 };
 
-export const removeAllDialogs = () => {
+export const removeAllDialogs = () => { // dummy function
   const dialog = document.getElementById("call_display");
   dialog.style.display = "none";
 };
 
-export const showInfoDialog = (preOfferAnswer) => {
+export const showInfoDialog = (preOfferAnswer) => { // used at time of ringing
   let infoDialog = null;
 
-  if (preOfferAnswer === constants.preOfferAnswer.CALL_REJECTED) {
+  if (preOfferAnswer === constants.preOfferAnswer.CALL_REJECTED) { // call backs  passing to mobile nfi
     callNFI("onReject");
   }
 
@@ -71,16 +72,16 @@ export const showInfoDialog = (preOfferAnswer) => {
   }
 };
 
-export const callNFI = (msg) => {
+export const callNFI = (msg) => { // to communicate to NFI to 
 
   console.log(msg);
   try {
 
     if (store.getDevice()==="Android" || store.getDevice()==="") {
-      Android && Android.callCallBack(msg);
+      Android && Android.callCallBack(msg); // callback method to pass callbacks to webweb
     }else if(store.getDevice()==="iphone"){
       var callbackToIOSNative = {'VCCallbackIOS':msg};
-      window.webkit.messageHandlers.fromNodeVC.postMessage(callbackToIOSNative);
+      window.webkit.messageHandlers.fromNodeVC.postMessage(callbackToIOSNative); // callback to ios 
     }
   } catch (ex) {
     console.log("NFI Android is not defined");
@@ -96,19 +97,19 @@ export const showIncomingCallDialog = (
     callType === constants.callType.CHAT_PERSONAL_CODE ? "Chat" : "Video";
   let ringtone = new Audio("./audio/cell-phone-ringing.mp3");
   ringtone.loop = true;
-  Swal.fire({
+  Swal.fire({ // public lib
     title: "Incoming Call!!!",
     showDenyButton: false,
     showCancelButton: true,
     confirmButtonText: "Accept",
     denyButtonText: `Cancel`,
-    timer: 15000,
+    timer: 15000, // popup timer  for call 
     didOpen: () => {
       ringtone.play();
     }
-  }).then((result) => {
+  }).then((result) => {// then ---->lib returning  promise ----> code works when  the action is done
     if (result.isConfirmed) {
-      acceptCallHandler();
+      acceptCallHandler(); 
     } else if (result.isDismissed) {
       rejectCallHandler(result.dismiss);
     }

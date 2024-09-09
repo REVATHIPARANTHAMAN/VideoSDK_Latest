@@ -168,7 +168,7 @@ const createPeerConnection = () => {
     for (const track of localStream.getTracks()) {
       let sender = peerConection.addTrack(track, localStream);
       if (track.kind === "video") {
-        store.setVideoTrackSender(sender);
+        store.setVideoTrackSender(sender); // separating audio and video  ttracks and storing in store.js
       }
       if (track.kind === "audio") {
         store.setAudioTrackSender(sender);
@@ -177,12 +177,12 @@ const createPeerConnection = () => {
   }
 };
 
-export const sendMessageUsingDataChannel = (message) => { // need to check why this function is using
+export const sendMessageUsingDataChannel = (message) => { // sending application id to agent helper function
   const stringifiedMessage = JSON.stringify(message);
   dataChannel.send(stringifiedMessage);
 };
 
-export const sendPreOffer = (callType, calleePersonalCode) => {// need to check why this function is using
+export const sendPreOffer = (callType, calleePersonalCode) => {// pre offcer - to check agent is availavle or not to call for call
   connectedUserDetails = {
     callType,
     socketId: calleePersonalCode,
@@ -197,11 +197,11 @@ export const sendPreOffer = (callType, calleePersonalCode) => {// need to check 
       calleePersonalCode,
     };
     ui.showCallingDialog(callingDialogRejectCallHandler); // to display the popup of accept and cancel 
-    store.setCallState(constants.callState.CALL_UNAVAILABLE); // y we are setting un available????
-    wss.sendPreOffer(data); // need to check why this function is using
+    store.setCallState(constants.callState.CALL_UNAVAILABLE); // setting the agent as un availa le  coz already one call is connected
+    wss.sendPreOffer(data); // to check agent is availavle or not to call for call
   }
 
-  if (                    // need to check why this function is using
+  if (                    // dummy function
     callType === constants.callType.CHAT_STRANGER ||
     callType === constants.callType.VIDEO_STRANGER
   ) {
@@ -209,12 +209,12 @@ export const sendPreOffer = (callType, calleePersonalCode) => {// need to check 
       callType,
       calleePersonalCode,
     };
-    store.setCallState(constants.callState.CALL_UNAVAILABLE);// y we are setting un available????
-    wss.sendPreOffer(data);// need to check why this function is using??
+    store.setCallState(constants.callState.CALL_UNAVAILABLE); // need to remove during code optimization
+    wss.sendPreOffer(data);// 
   }
 };
 
-export const handlePreOffer = (data) => {// need to check why this function is using
+export const handlePreOffer = (data) => {// customer to agent handling agent availablility
 
   console.log("handlePreOffer", data);
   const { callType, callerSocketId, calleePersonalCode } = data;
@@ -251,30 +251,30 @@ export const handlePreOffer = (data) => {// need to check why this function is u
 const acceptCallHandler = (calleePersonalCode) => { // function to execute after accepting the call
   createPeerConnection(); // creating connection 
   console.log(calleePersonalCode)
-  store.setRemoteUser(calleePersonalCode); // ???
-  sendPreOfferAnswer(constants.preOfferAnswer.CALL_ACCEPTED);
+  store.setRemoteUser(calleePersonalCode); //  display data saved to connected urs
+  sendPreOfferAnswer(constants.preOfferAnswer.CALL_ACCEPTED); // to set the status as call is accepted or not
 };
 
 const rejectCallHandler = (triggeredAction) => { // function to execute after rejecting the calls
   setIncomingCallsAvailable(); // to get the local stream state based on the local stream state call or chat will be initiated
-  if (triggeredAction === "timer") {
+  if (triggeredAction === "timer") { // display popup auto popup  due to timer
     sendPreOfferAnswer(constants.preOfferAnswer.CALL_NOT_ANSWERED);
   } else {
     sendPreOfferAnswer(constants.preOfferAnswer.CALL_REJECTED);
   }
 };
 
-const callingDialogRejectCallHandler = () => { // function to handle  popup after reject
+const callingDialogRejectCallHandler = () => { // closing the peer connection after the hangup button from agent app/ customer
   const data = {
     connectedUserSocketId: connectedUserDetails.socketId,
   };
   console.log("data in callingDialogRejectCallHandler" + JSON.stringify(data));
-  closePeerConnectionAndResetState();
+  closePeerConnectionAndResetState(); //  closing the peer connection
 
   wss.sendUserHangedUp(data);
 };
 
-const sendPreOfferAnswer = (preOfferAnswer, callerSocketId = null) => { // 
+const sendPreOfferAnswer = (preOfferAnswer, callerSocketId = null) => { // sending available or not to handle pre offer
   const socketId = callerSocketId
     ? callerSocketId
     : connectedUserDetails.socketId;
@@ -282,65 +282,66 @@ const sendPreOfferAnswer = (preOfferAnswer, callerSocketId = null) => { //
     callerSocketId: socketId,
     preOfferAnswer,
   };
-  ui.removeAllDialogs();
+  ui.removeAllDialogs(); // 
   wss.sendPreOfferAnswer(data);
 };
 
-export const handlePreOfferAnswer = (data) => {
+export const handlePreOfferAnswer = (data) => { //to initiate call in agent app  // will get info that call is initiated
   const { preOfferAnswer } = data;
   console.log("preofferAnswer", data);
   ui.removeAllDialogs();
 
-  if (preOfferAnswer === constants.preOfferAnswer.CALLEE_NOT_FOUND) {
+  if (preOfferAnswer === constants.preOfferAnswer.CALLEE_NOT_FOUND) { //if call is initiated to not found user
     ui.showInfoDialog(preOfferAnswer);
     setIncomingCallsAvailable();
     // show dialog that callee has not been found
   }
 
-  if (preOfferAnswer === constants.preOfferAnswer.CALL_UNAVAILABLE) {
+  if (preOfferAnswer === constants.preOfferAnswer.CALL_UNAVAILABLE) { // agent is in call for now so he will not be available for next call until this call is completed
     setIncomingCallsAvailable();
     ui.showInfoDialog(preOfferAnswer);
     // show dialog that callee is not able to connect
   }
 
-  if (preOfferAnswer === constants.preOfferAnswer.CALL_REJECTED) {
+  if (preOfferAnswer === constants.preOfferAnswer.CALL_REJECTED) { // user rejected the call
     setIncomingCallsAvailable();
     ui.showInfoDialog(preOfferAnswer);
     // show dialog that call is rejected by the callee
   }
 
-  if (preOfferAnswer === constants.preOfferAnswer.CALL_ACCEPTED) {
-    createPeerConnection();
-    sendWebRTCOffer();
+  if (preOfferAnswer === constants.preOfferAnswer.CALL_ACCEPTED) { // user accepts the call
+    createPeerConnection(); // call initiate function
+    sendWebRTCOffer(); // 
   }
 };
-
-const sendWebRTCOffer = async () => {
-  const offer = await peerConection.createOffer();
-  await peerConection.setLocalDescription(offer);
-  wss.sendDataUsingWebRTCSignaling({
-    connectedUserSocketId: connectedUserDetails.socketId,
-    type: constants.webRTCSignaling.OFFER,
+// webrtc ---- user for actual call connnection and sending videos
+// web socket ---- protocol used to define this call should be connect to particular person
+const sendWebRTCOffer = async () => { // 
+  const offer = await peerConection.createOffer(); // to get the peer connection ice candidate info - 
+  await peerConection.setLocalDescription(offer); // passes info that call is initiated // in remote it will do vise versa
+  wss.sendDataUsingWebRTCSignaling({ // 
+    connectedUserSocketId: connectedUserDetails.socketId, // detatis to send which user is connected
+    type: constants.webRTCSignaling.OFFER, 
     offer: offer,
   });
-};
+}; // if the call has been initiated from agent to cust we can use the above function ---- not for now
 
-export const handleWebRTCOffer = async (data) => {
-  await peerConection.setRemoteDescription(data.offer);
-  const answer = await peerConection.createAnswer();
-  await peerConection.setLocalDescription(answer);
-  wss.sendDataUsingWebRTCSignaling({
+export const handleWebRTCOffer = async (data) => { // whatever info received from send Webrtc it will handle this function
+  await peerConection.setRemoteDescription(data.offer); // setting the remote (the user who is calling) offer details
+  const answer = await peerConection.createAnswer(); // creating the channel to send the video data
+  await peerConection.setLocalDescription(answer); // setting the answer info in local.
+  wss.sendDataUsingWebRTCSignaling({ // sending the offer status to client or remote.
     connectedUserSocketId: connectedUserDetails.socketId,
     type: constants.webRTCSignaling.ANSWER,
     answer: answer,
   });
 };
 
-export const handleWebRTCAnswer = async (data) => {
+export const handleWebRTCAnswer = async (data) => { // dummy function
   await peerConection.setRemoteDescription(data.answer);
 };
 
-export const handleWebRTCCandidate = async (data) => {
+export const handleWebRTCCandidate = async (data) => { // adding the ice candidate info in the peerconnection object.
   try {
     await peerConection.addIceCandidate(data.candidate);
   } catch (err) {
@@ -353,20 +354,20 @@ export const handleWebRTCCandidate = async (data) => {
 
 // hang up
 
-export const handleHangUp = () => {
+export const handleHangUp = () => {// sending msg to server that agent is disconnected and resetting those values (eg connected users details)
   const data = {
-    connectedUserSocketId: connectedUserDetails.socketId,
+    connectedUserSocketId: connectedUserDetails.socketId, 
   };
 
-  wss.sendUserHangedUp(data);
-  closePeerConnectionAndResetState();
+  wss.sendUserHangedUp(data); // data ----> socket id
+  closePeerConnectionAndResetState();// 
 };
 
 export const handleConnectedUserHangedUp = () => {
   closePeerConnectionAndResetState();
 };
 
-const closePeerConnectionAndResetState = () => {
+const closePeerConnectionAndResetState = () => { // closing the peer connection and updating the user and sending the data to backend abt disconnection
   if (peerConection) {
     peerConection.close();
     ui.updateStatus("disconnected");
@@ -391,7 +392,7 @@ const closePeerConnectionAndResetState = () => {
         ui.resetRecordingButtons();
       }
     } catch (ex) {
-      console.log(ex);
+      console.log(ex); // once done based on this event onconnectionstatechange() is invoked
     }
   }
 
@@ -403,11 +404,11 @@ const closePeerConnectionAndResetState = () => {
     store.getState().localStream.getVideoTracks()[0].enabled = true;
     store.getState().localStream.getAudioTracks()[0].enabled = true;
   }
-  setIncomingCallsAvailable();
+  setIncomingCallsAvailable();  // 
   connectedUserDetails = null;
 };
 
-const checkCallPossibility = (callType) => {
+const checkCallPossibility = (callType) => { // getting call state from store  and checking whether  user is available for call or not
   const callState = store.getState().callState;
 
   if (callState === constants.callState.CALL_AVAILABLE) {
@@ -425,10 +426,10 @@ const checkCallPossibility = (callType) => {
   return false;
 };
 
-const setIncomingCallsAvailable = () => {
+const setIncomingCallsAvailable = () => { // send preoffer will check  the store 
   const localStream = store.getState().localStream;
   if (localStream) {
-    store.setCallState(constants.callState.CALL_AVAILABLE);
+    store.setCallState(constants.callState.CALL_AVAILABLE); // setting the current call status to store
   } else {
     store.setCallState(constants.callState.CALL_AVAILABLE_ONLY_CHAT);
   }

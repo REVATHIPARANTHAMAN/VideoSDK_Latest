@@ -4,26 +4,26 @@ import * as constants from "./constants.js"
 import * as store from "./store.js"
 import * as ui from "./uiInteract.js"
 const socket = io("/");
-webRTCHandler.getLocalPreview();
-socketCon.registerSocketEvents(socket);
+webRTCHandler.getLocalPreview(); // to get local video stream 
+socketCon.registerSocketEvents(socket);//to register events in websockets
 
 // const personalCodeChatButton = document.getElementById(
 //   "join"
 // );
 checkCameraUsage();
-let URLParams = new URLSearchParams(window.location.search);
-if (URLParams.get("user")) {
+let URLParams = new URLSearchParams(window.location.search); // forming URL
+if (URLParams.get("user")) { // user in the URL
   const callType = constants.callType.VIDEO_PERSONAL_CODE;
-  store.setRemoteUser(URLParams.get("user"));
-  webRTCHandler.sendPreOffer(callType, URLParams.get("user"));
+  store.setRemoteUser(URLParams.get("user")); // sending the User details to backend
+  webRTCHandler.sendPreOffer(callType, URLParams.get("user")); // call is initiated using the send preoffer 
 }
 
-if (URLParams.get("applicationid")) {
-  store.setApplicationId(URLParams.get("applicationid"));
+if (URLParams.get("applicationid")) { // getting application id from URLParams ifthere is no application id passed it will return null
+  store.setApplicationId(URLParams.get("applicationid")); // storing the application id value in store
 }
 
-if (URLParams.get("channel")) {
-  store.setDevice(URLParams.get("channel"));
+if (URLParams.get("channel")) { // getting the channel either ios or android
+  store.setDevice(URLParams.get("channel")); // storing the device details 
 }
 
 // personalCodeChatButton.addEventListener("click", () => {
@@ -55,7 +55,7 @@ if (URLParams.get("channel")) {
 
 const hangUpButton = document.getElementById("hang_up_button");
 hangUpButton.addEventListener("click", () => {
-  webRTCHandler.handleHangUp();
+  webRTCHandler.handleHangUp(); // closing the connections after the hangup button
 });
 
 // // switchCamera
