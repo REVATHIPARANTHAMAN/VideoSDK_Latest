@@ -445,7 +445,7 @@ async function checkCameraUsage() {
       console.log('Camera is available and not in use.');
       
       // Send status to the backend
-      await sendCameraStatusToBackend(true);
+     // await sendCameraStatusToBackend(true);
 
       // Stop the stream to release the camera
       camera_stream.getTracks().forEach(track => track.stop());
@@ -458,7 +458,7 @@ async function checkCameraUsage() {
           console.log('Camera is already in use by another application or tab.');
           
           // Send status to the backend
-          await sendCameraStatusToBackend(false);
+        //  await sendCameraStatusToBackend(false);
       } else {
           console.error('Error accessing the camera:', error);
       }
