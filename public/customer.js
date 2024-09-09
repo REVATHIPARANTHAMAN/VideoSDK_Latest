@@ -2,7 +2,7 @@ import * as webRTCHandler from "./RTCHandler.js";
 import * as socketCon from "./wss.js";
 import * as constants from "./constants.js"
 import * as store from "./store.js"
-import * as ui from "./uiInteract.js"
+
 const socket = io("/");
 webRTCHandler.getLocalPreview(); // to get local video stream 
 socketCon.registerSocketEvents(socket);//to register events in websockets

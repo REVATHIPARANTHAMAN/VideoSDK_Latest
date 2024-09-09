@@ -2,7 +2,6 @@ import * as wss from "./wss.js";
 import * as constants from "./constants.js";
 import * as store from "./store.js";
 import * as ui from "./uiInteract.js";
-import { Console } from "winston/lib/winston/transports/index.js";
 
 let connectedUserDetails;
 let peerConection;
