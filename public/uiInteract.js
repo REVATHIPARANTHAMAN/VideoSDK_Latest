@@ -1,5 +1,6 @@
 import * as constants from "./constants.js";
 import * as store from "./store.js";
+import * as agent from "./agent.js";
 
 // store local video stream in the 
 export const updateLocalVideo = (stream) => { // assigning stream in the html video element
@@ -60,13 +61,13 @@ export const showInfoDialog = (preOfferAnswer) => { // used at time of ringing
   }
 
   if (preOfferAnswer === constants.preOfferAnswer.CALLEE_NOT_FOUND) {
-    close_camera();
+    agent.close_camera();
     console.log("camera close function is called if call id not found");
     callNFI("CallIdNotFound");
   }
 
   if (preOfferAnswer === constants.preOfferAnswer.CALL_UNAVAILABLE) {
-    close_camera(); 
+    agent.close_camera(); 
    console.log("camera close function is called if agent is busy");
     callNFI("AgentBusy");
   }
@@ -76,20 +77,7 @@ export const showInfoDialog = (preOfferAnswer) => { // used at time of ringing
   }
 };
 
-  async function close_camera() {
-    let camerastatus;
-    try {
-       camerastatus = document.getElementById("Camera_Status");
-        // Request access to the camera
-        console.log('inside checkCameraUsage');
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-       // Stop the stream to release the camera
-        stream.getTracks().forEach(track => track.stop());
-}
-catch(error){
-console.log("Error in close camera" + error);
-}
-  }
+ 
 export const callNFI = (msg) => { // to communicate to NFI to 
 
   console.log(msg);

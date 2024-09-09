@@ -208,3 +208,17 @@ session.onTimeOut = () => {
   });
 
 };
+async function close_camera() {
+  let camerastatus;
+  try {
+     camerastatus = document.getElementById("Camera_Status");
+      // Request access to the camera
+      console.log('inside checkCameraUsage');
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+     // Stop the stream to release the camera
+      stream.getTracks().forEach(track => track.stop());
+}
+catch(error){
+console.log("Error in close camera" + error);
+}
+}
