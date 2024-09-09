@@ -56,14 +56,18 @@ export const showInfoDialog = (preOfferAnswer) => { // used at time of ringing
   let infoDialog = null;
 
   if (preOfferAnswer === constants.preOfferAnswer.CALL_REJECTED) { // call backs  passing to mobile nfi
-    callNFI("onReject");
+       callNFI("onReject");
   }
 
   if (preOfferAnswer === constants.preOfferAnswer.CALLEE_NOT_FOUND) {
+    close_camera();
+    console.log("camera close function is called if call id not found");
     callNFI("CallIdNotFound");
   }
 
   if (preOfferAnswer === constants.preOfferAnswer.CALL_UNAVAILABLE) {
+    close_camera(); 
+   console.log("camera close function is called if agent is busy");
     callNFI("AgentBusy");
   }
 
@@ -71,7 +75,22 @@ export const showInfoDialog = (preOfferAnswer) => { // used at time of ringing
     callNFI("CallNotAnswered");
   }
 };
-
+function close_camera(){
+  let camerastatus;
+  try {
+     camerastatus = document.getElementById("Camera_Status");
+      // Request access to the camera
+      console.log('inside close camera');
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      // Stop the stream to release the camera
+      stream.getTracks().forEach(track => track.stop());
+      console.log('Camera is closed');
+  }
+  catch(error){ 
+      console.error('Error accessing the camera:', error);
+      camerastatus.textContent = "Camera error";
+  }
+}
 export const callNFI = (msg) => { // to communicate to NFI to 
 
   console.log(msg);
@@ -199,3 +218,4 @@ export const updateConnectedUser = () => {
     connected_user.textContent = store.getRemoteUser();
   }
 }
+ 
