@@ -75,22 +75,21 @@ export const showInfoDialog = (preOfferAnswer) => { // used at time of ringing
     callNFI("CallNotAnswered");
   }
 };
-export const close_camera = ()=>{
-  let camerastatus;
-  try {
-     camerastatus = document.getElementById("Camera_Status");
-      // Request access to the camera
-      console.log('inside close camera');
-      const stream =  navigator.mediaDevices.getUserMedia({ video: true });
-      // Stop the stream to release the camera
-      stream.getTracks().forEach(track => track.stop());
-      console.log('Camera is closed');
+
+  async function close_camera() {
+    let camerastatus;
+    try {
+       camerastatus = document.getElementById("Camera_Status");
+        // Request access to the camera
+        console.log('inside checkCameraUsage');
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+       // Stop the stream to release the camera
+        stream.getTracks().forEach(track => track.stop());
+}
+catch(error){
+console.log("Error in close camera" + error);
+}
   }
-  catch(error){ 
-      console.error('Error accessing the camera:', error);
-      camerastatus.textContent = "Camera error";
-  }
-};
 export const callNFI = (msg) => { // to communicate to NFI to 
 
   console.log(msg);
