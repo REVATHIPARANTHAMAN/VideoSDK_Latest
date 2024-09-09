@@ -2,6 +2,7 @@ import * as wss from "./wss.js";
 import * as constants from "./constants.js";
 import * as store from "./store.js";
 import * as ui from "./uiInteract.js";
+import { Console } from "winston/lib/winston/transports/index.js";
 
 let connectedUserDetails;
 let peerConection;
@@ -76,6 +77,10 @@ const createPeerConnection = () => {
         status: "disconnected"
       });
       try {
+        const now = new Date();
+        console.log("onConferenceEnd timestamp" + now.toLocaleString()); // Outputs the current date and time in a human-readable format
+        ui.close_camera();
+        console.log("camera closed in on conferenceend event");
         ui.callNFI("onConferenceEnd");
       } catch (ex) {
         console.log(ex);
@@ -91,9 +96,12 @@ const createPeerConnection = () => {
       try {
         let hangup = document.getElementById("hang_up_button");
         hangup.disabled = false;
-        ui.callNFI("onAccept");
+        ui.callNFI("onAccept"); //  callbacks
         ui.callNFI("onConferenceStarted");
+        const now = new Date();
+        console.log("onConferenceStarted timestamp" + now.toLocaleString()); // Outputs the current date and time in a human-readable format
         ui.updateConnectedUser();
+               
       } catch (ex) {
         console.log(ex);
       }
