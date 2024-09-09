@@ -373,6 +373,7 @@ export const handleConnectedUserHangedUp = () => {
 const closePeerConnectionAndResetState = () => { // closing the peer connection and updating the user and sending the data to backend abt disconnection
   if (peerConection) {
     peerConection.close();
+    console.log("Call disconnected");
     const now = new Date();
         console.log(`onConferenceEnd timestamp${now.toLocaleString()}`); // Outputs the current date and time in a human-readable format
     ui.updateStatus("disconnected");
