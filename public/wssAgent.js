@@ -52,6 +52,8 @@ export const registerSocketEvents = (socket) => { // wss agent handles the event
     connect_vc.textContent = "Connect VC";
     connect_vc.dataset.status = "disconnected";
     console.log("socket disconnected");
+    const currentTimeInMilliseconds = Date.now();
+    console.log("Socket Disconnected timestamp" + currentTimeInMilliseconds);
     ringtone.pause();
     sessionTool.session.dispose();
   });
@@ -60,6 +62,8 @@ export const registerSocketEvents = (socket) => { // wss agent handles the event
     const status_bar = document.querySelector("#status_bar");
     status_bar.style.display = "none";
     console.log("socket connected");
+    const currentTimeInMilliseconds = Date.now();
+    console.log("Socket connected timestamp" + currentTimeInMilliseconds);
   })
 
   socket.on("webRTC-signaling", (data) => {
