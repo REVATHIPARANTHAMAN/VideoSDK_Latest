@@ -222,3 +222,4 @@ catch(error){
 console.log("Error in close camera" + error);
 }
 }
+

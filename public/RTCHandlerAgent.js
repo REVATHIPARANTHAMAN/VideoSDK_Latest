@@ -275,8 +275,8 @@ const callingDialogRejectCallHandler = () => { // closing the peer connection af
 };
 
 const sendPreOfferAnswer = (preOfferAnswer, callerSocketId = null) => { // sending available or not to handle pre offer
-  const now = new Date();
-        console.log("onConferenceStarted timestamp" + now.toLocaleString()); // Outputs the current date and time in a human-readable format
+  wss.getFormattedTimestamp();
+        console.log("onConferenceStarted timestamp" + getFormattedTimestamp()); // Outputs the current date and time in a human-readable format
   const socketId = callerSocketId
     ? callerSocketId
     : connectedUserDetails.socketId;
@@ -374,8 +374,8 @@ const closePeerConnectionAndResetState = () => { // closing the peer connection 
   if (peerConection) {
     peerConection.close();
     console.log("Call disconnected");
-    const now = new Date();
-        console.log(`onConferenceEnd timestamp${now.toLocaleString()}`); // Outputs the current date and time in a human-readable format
+    wss.getFormattedTimestamp();
+        console.log("onConferenceEnd timestamp" + getFormattedTimestamp()); // Outputs the current date and time in a human-readable format
     ui.updateStatus("disconnected");
     peerConection = null;
     let state = store.getState();

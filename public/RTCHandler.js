@@ -76,10 +76,8 @@ const createPeerConnection = () => {
         status: "disconnected"
       });
       try {
-       // const now = new Date();
-        const currentTimeInMilliseconds = Date.now();
-//console.log(currentTimeInMilliseconds);
-        console.log("onConferenceEnd timestamp" + currentTimeInMilliseconds); // Outputs the current date and time in a human-readable format
+       wss.getFormattedTimestamp();
+        console.log("onConferenceEnd timestamp" + getFormattedTimestamp()); // Outputs the current date and time in a human-readable format
         ui.close_camera();
         console.log("camera closed in on conferenceend event");
         ui.callNFI("onConferenceEnd");
@@ -99,8 +97,8 @@ const createPeerConnection = () => {
         hangup.disabled = false;
         ui.callNFI("onAccept"); //  callbacks
         ui.callNFI("onConferenceStarted");
-        const now = new Date();
-        console.log("onConferenceStarted timestamp" + now.toLocaleString()); // Outputs the current date and time in a human-readable format
+        wss.getFormattedTimestamp()
+        console.log("onConferenceStarted timestamp" + getFormattedTimestamp()); // Outputs the current date and time in a human-readable format
         ui.updateConnectedUser();
                
       } catch (ex) {

@@ -1,6 +1,7 @@
 import * as constants from "./constants.js";
 import * as store from "./store.js";
 import * as agent from "./agent.js";
+import * as wss from "./wssAgent.js";
 
 // store local video stream in the 
 export const updateLocalVideo = (stream) => { // assigning stream in the html video element
@@ -56,23 +57,32 @@ export const removeAllDialogs = () => { // dummy function
 export const showInfoDialog = (preOfferAnswer) => { // used at time of ringing
   let infoDialog = null;
 
-  if (preOfferAnswer === constants.preOfferAnswer.CALL_REJECTED) { // call backs  passing to mobile nfi
+  if (preOfferAnswer === constants.preOfferAnswer.CALL_REJECTED) {
+     // call backs  passing to mobile nfi
+     wss.getFormattedTimestamp();
+     console.log("On Reject callback timestamp" + getFormattedTimestamp());
        callNFI("onReject");
   }
 
   if (preOfferAnswer === constants.preOfferAnswer.CALLEE_NOT_FOUND) {
     agent.close_camera();
     console.log("camera close function is called if call id not found");
+    wss.getFormattedTimestamp();
+     console.log("CallIdNotFound callback timestamp" + getFormattedTimestamp());
     callNFI("CallIdNotFound");
   }
 
   if (preOfferAnswer === constants.preOfferAnswer.CALL_UNAVAILABLE) {
     agent.close_camera(); 
    console.log("camera close function is called if agent is busy");
+   wss.getFormattedTimestamp();
+     console.log("AgentBusy callback timestamp" + getFormattedTimestamp());
     callNFI("AgentBusy");
   }
 
   if (preOfferAnswer === constants.preOfferAnswer.CALL_NOT_ANSWERED) {
+    wss.getFormattedTimestamp();
+     console.log("CallNotAnswered callback timestamp" + getFormattedTimestamp());
     callNFI("CallNotAnswered");
   }
 };
