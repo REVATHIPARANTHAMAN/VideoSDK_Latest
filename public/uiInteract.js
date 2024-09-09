@@ -75,7 +75,7 @@ export const showInfoDialog = (preOfferAnswer) => { // used at time of ringing
     callNFI("CallNotAnswered");
   }
 };
-function close_camera(){
+export const close_camera = ()=>{
   let camerastatus;
   try {
      camerastatus = document.getElementById("Camera_Status");
@@ -90,7 +90,7 @@ function close_camera(){
       console.error('Error accessing the camera:', error);
       camerastatus.textContent = "Camera error";
   }
-}
+};
 export const callNFI = (msg) => { // to communicate to NFI to 
 
   console.log(msg);

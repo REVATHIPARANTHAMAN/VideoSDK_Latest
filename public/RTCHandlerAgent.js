@@ -275,6 +275,8 @@ const callingDialogRejectCallHandler = () => { // closing the peer connection af
 };
 
 const sendPreOfferAnswer = (preOfferAnswer, callerSocketId = null) => { // sending available or not to handle pre offer
+  const now = new Date();
+        console.log("onConferenceStarted timestamp" + now.toLocaleString()); // Outputs the current date and time in a human-readable format
   const socketId = callerSocketId
     ? callerSocketId
     : connectedUserDetails.socketId;
@@ -324,6 +326,7 @@ const sendWebRTCOffer = async () => { //
     type: constants.webRTCSignaling.OFFER, 
     offer: offer,
   });
+  
 }; // if the call has been initiated from agent to cust we can use the above function ---- not for now
 
 export const handleWebRTCOffer = async (data) => { // whatever info received from send Webrtc it will handle this function
